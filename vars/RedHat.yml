@@ -1,0 +1,5 @@
+---
+# vars file for RedHat
+sshd_config_path: /etc/ssh/sshd_config
+sshd_service_name: sshd
+sshd_iptables_data: /etc/sysconfig/iptables

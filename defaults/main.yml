@@ -1,0 +1,15 @@
+---
+# defaults file for sshd
+# standard setting
+sshd_port: 22
+sshd_use_dns: "no"
+sshd_gssapi_authentication: "no"
+
+# more secure
+sshd_security: false
+sshd_protocol: 2
+sshd_permit_root_login: "no"
+sshd_password_authentication: "yes"
+
+# set up firewall
+sshd_setup_firewall: true

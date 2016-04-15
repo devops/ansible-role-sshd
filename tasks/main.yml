@@ -1,0 +1,39 @@
+---
+# tasks file for sshd
+
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Update SSH configuration to be standard setting.
+  lineinfile: >
+    dest={{ sshd_config_path }}
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+    state=present
+  with_items:
+    - { regexp: "^#?Port", line: "Port {{ sshd_port }}" }
+    - { regexp: "^#?UseDNS", line: "UseDNS {{ sshd_use_dns }}" }
+    - { regexp: "^GSSAPIAuthentication", line: "GSSAPIAuthentication {{ sshd_gssapi_authentication}}" }
+  notify: restart sshd
+
+- name: Update SSH configuration to be more secure.
+  lineinfile: >
+    dest={{ sshd_config_path }}
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+    state=present
+  with_items:
+    - { regexp: "^#?Protocol", line: "Protocol {{ sshd_protocol }}" }
+    - { regexp: "^#?PermitRootLogin", line: "PermitRootLogin {{ sshd_permit_root_login }}" }
+    - { regexp: "^PasswordAuthentication", line: "PasswordAuthentication {{ sshd_password_authentication }}" }
+  notify: restart sshd
+  when: sshd_security
+
+- name: Setup firewalld
+  firewalld: port={{ sshd_port }}/tcp permanent=true state=enabled immediate=true
+  when: sshd_setup_firewall and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+
+- name: Setup iptables
+  command: iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport {{ sshd_port }} -j ACCEPT
+  notify: save iptables
+  when: sshd_setup_firewall and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'

@@ -1,0 +1,17 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: z
+  description: Security sshd.
+  company:
+  license: license (BSD, MIT)
+  min_ansible_version: 1.7
+  platforms:
+  - name: EL
+    versions:
+    - 6
+    - 7
+  categories:
+    - system
+    - security

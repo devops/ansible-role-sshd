@@ -1,0 +1,8 @@
+---
+# handlers file for sshd
+
+- name: save iptables
+  shell: iptables-save > {{ sshd_iptables_data }}
+
+- name: restart sshd
+  service: "name={{ sshd_service_name }} state=restarted"
