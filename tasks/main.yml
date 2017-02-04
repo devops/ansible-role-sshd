@@ -32,8 +32,10 @@
 - name: Setup firewalld
   firewalld: port={{ sshd_port }}/tcp permanent=true state=enabled immediate=true
   when: sshd_setup_firewall and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+  ignore_errors: True
 
 - name: Setup iptables
   command: iptables -I INPUT 5 -p tcp -m state --state NEW -m tcp --dport {{ sshd_port }} -j ACCEPT
   notify: save iptables
   when: sshd_setup_firewall and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'
+  ignore_errors: True
